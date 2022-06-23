@@ -1,15 +1,13 @@
 overlay_controls = input('overlay_controls')
-puts input('overlay_controls').class
-puts overlay_controls
-puts overlay_controls.any?
-puts overlay_controls.empty?
-puts overlay_controls[0].nil?
-
-input('baseline', value: ENV["BASELINE"])
+# puts input('overlay_controls').class
+# puts overlay_controls == []
+# puts overlay_controls.any?
+# puts overlay_controls.empty?
+# puts overlay_controls[0].nil?
 
 include_controls 'microsoft-windows-server-2019-stig-baseline' do
 
-  unless overlay_controls[0].nil?
+  unless overlay_controls.empty?
     overlay_controls.each do |overlay_control|
       control overlay_control do
         impact 0.0

@@ -13,22 +13,20 @@ depends:
   url: https://github.com/mitre/microsoft-windows-server-2019-stig-baseline/archive/master.tar.gz
 
 inputs:
-  # - name: system_categorization # test
-  #   desc: "Selected system baseline based on the environment variable"
-  #   type: String
-  #   value: !ENV ${BASELINE}
+  - name: system_categorization
+    desc: "Selected system baseline based on the environment variable"
+    type: String
+    value: <%= ENV['BASELINE'] %> 
 
   - name: overlay_controls
     desc: 'List of inapplicable controls in ARS 5.0 based on the system categorization'
     type: Array
 <% if ENV['BASELINE'] == 'High-HVA' %>
-    value:
-      - 
+    value: []
 <% elsif ENV['BASELINE'] == 'High' %>
-    value:
-      -
+    value: []
 <% elsif ENV['BASELINE'] == 'Moderate-HVA' %>
-    value:
+    value: []
 <% elsif ENV['BASELINE'] == 'Moderate' %>
     value:
       - "V-93517" # SC-03
