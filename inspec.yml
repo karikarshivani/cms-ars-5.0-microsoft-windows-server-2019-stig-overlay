@@ -16,7 +16,7 @@ inputs:
   - name: system_categorization
     desc: "Selected system baseline based on the environment variable"
     type: String
-    value: <%= ENV['BASELINE'] %> 
+    value: <%= ENV['BASELINE'] ? '' : 'Moderate (Default)' %>
 
   - name: overlay_controls
     desc: 'List of inapplicable controls in ARS 5.0 based on the system categorization'
@@ -27,7 +27,7 @@ inputs:
     value: []
 <% elsif ENV['BASELINE'] == 'Moderate-HVA' %>
     value: []
-<% elsif ENV['BASELINE'] == 'Moderate' %>
+<% elsif ENV['BASELINE'] == 'Moderate' || ENV['BASELINE'].nil? %> # Default
     value:
       - "V-93517" # SC-03
       - "V-93519" # SC-03
@@ -167,8 +167,8 @@ inputs:
       - "V-93567" # SI-02(02)
       - "V-93563" # SI-16
       - "V-93565" # SI-16
-<% else %>
-    required: true
+# <% else %>
+#     required: true
 <% end %>
 
   # - name: max_pass_lockout #V-93141
