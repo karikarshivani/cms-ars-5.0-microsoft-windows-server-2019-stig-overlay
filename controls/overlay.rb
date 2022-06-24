@@ -3,7 +3,7 @@ system_categorization = input('system_categorization')
 
 include_controls 'microsoft-windows-server-2019-stig-baseline' do
 
-  unless overlay_controls.empty?
+  unless overlay_controls.empty? # Test with !oc.any?
     overlay_controls.each do |overlay_control|
       control overlay_control do
         impact 0.0

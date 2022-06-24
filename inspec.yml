@@ -16,7 +16,7 @@ inputs:
   - name: system_categorization
     desc: "Selected system baseline based on the environment variable"
     type: String
-    value: <%= ENV['BASELINE'] ? '' : 'Moderate (Default)' %>
+    value: <%= ENV['BASELINE'].nil? ? 'Moderate (Default)' : ENV['BASELINE'] %>
 
   - name: overlay_controls
     desc: 'List of inapplicable controls in ARS 5.0 based on the system categorization'
