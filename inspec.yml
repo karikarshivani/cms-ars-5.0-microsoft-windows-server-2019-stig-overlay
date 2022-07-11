@@ -173,8 +173,10 @@ inputs:
 
   - name: org_name
     desc: "Name of the organization running this profile"
-    type: String
-    value: "CMS"
+    type: Hash
+    value:
+      acronym: "CMS"
+      full_form: "Centers for Medicare & Medicaid Services"
     profile: microsoft-windows-server-2019-stig-baseline
 
   # - name: max_pass_lockout #V-93141
