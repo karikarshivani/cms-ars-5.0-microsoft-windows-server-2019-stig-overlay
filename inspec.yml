@@ -10,7 +10,7 @@ inspec_version: ">= 4.0"
 
 depends:
 - name: microsoft-windows-server-2019-stig-baseline
-  url: https://github.com/mitre/microsoft-windows-server-2019-stig-baseline/archive/master.tar.gz
+  url: https://github.com/mitre/microsoft-windows-server-2019-stig-baseline/archive/parameterize.tar.gz
 
 inputs:
   - name: system_categorization
@@ -18,16 +18,121 @@ inputs:
     type: String
     value: <%= ENV['BASELINE'].nil? ? 'Moderate (Default)' : ENV['BASELINE'] %>
 
+  - name: org_name
+    desc: "Name of the organization running this profile"
+    type: Hash
+    value:
+      acronym: "CMS"
+      full_form: "Centers for Medicare & Medicaid Services"
+    profile: microsoft-windows-server-2019-stig-baseline
+
+  - name: temporary_account_period # V-92975
+    desc: "List the number of days that temporary accounts remain active for"
+    type: Numeric
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'Moderate-HVA'].include? ENV['BASELINE'] %>
+    value: 0.5
+    <% elsif ENV['BASELINE'] == 'High' %>
+    value: 30
+    <% elsif ENV['BASELINE'] == 'Moderate' %>
+    value: 60
+    <% else %>
+    value: 3 # Baseline default?
+    <% end %>
+
+  - name: temporary_account_period_phrase # V-92975
+    desc: "List the number of hours/days that temporary accounts remain active for"
+    type: String
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'Moderate-HVA'].include? ENV['BASELINE'] %>
+    value: "12 hours"
+    <% elsif ENV['BASELINE'] == 'High' %>
+    value: "30 days"
+    <% elsif ENV['BASELINE'] == 'Moderate' %>
+    value: "60 days"
+    <% else %>
+    value: "72 hours"
+    <% end %>
+
+  - name: emergency_account_period # V-92977
+    desc: "List the number of days that temporary accounts remain active for"
+    type: Numeric
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'Moderate-HVA'].include? ENV['BASELINE'] %>
+    value: 0.5
+    <% elsif ['High', 'Moderate'].include? ENV['BASELINE'] %>
+    value: 1
+    <% else %>
+    value: 3
+    <% end %>
+
+  - name: emergency_account_period_phrase # V-92977
+    desc: "List the number of hours/days that temporary accounts remain active for"
+    type: String
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'Moderate-HVA'].include? ENV['BASELINE'] %>
+    value: "12 hours"
+    <% elsif ['High', 'Moderate'].include? ENV['BASELINE'] %>
+    value: "24 hours"
+    <% else %>
+    value: "72 hours"
+    <% end %>
+
+  - name: max_pass_lockout # V-93141
+    desc: "Account lockout threshold based on invalid logon attempts"
+    type: Numeric
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['Moderate', 'Moderate-HVA', 'Low', 'Low-HVA'].include? ENV['BASELINE'] %>
+    value: 5
+    <% else %>
+    value: 3
+    <% end %>
+
+  - name: pass_lock_time # V-93143
+    desc: "List the number of minutes before a session is locked out"
+    type: Numeric
+    value: 120
+    profile: microsoft-windows-server-2019-stig-baseline
+
+  - name: pass_lock_duration # V-93145
+    desc: "List the number of minutes for account lockout duration"
+    type: Numeric
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'High'].include? ENV['BASELINE'] %>
+    value: 0
+    <% elsif ['Moderate-HVA', 'Moderate'].include? ENV['BASELINE'] %>
+    value: 60
+    <% else %>
+    value: 15
+    <% end %>
+
+  - name: LegalNoticeCaption # V-93149
+    desc: "Use the default values or add an organization-defined legal notice caption"
+    type: Array
+    value:
+      - "CMS Notice and Consent Banner"
+      - "US Department of Health and Human Services Warning Statement"
+    profile: microsoft-windows-server-2019-stig-baseline
+
+  - name: LegalNoticeText # V-93147
+    type: string
+    profile: microsoft-windows-server-2019-stig-baseline
+    value: "* This warning banner provides privacy and security notices consistent with applicable federal laws, directives, and other federal guidance for accessing this Government system, which includes (1) this computer network, (2) all computers connected to this network, and (3) all devices and storage media attached to this network or to a computer on this network.
+    * This system is provided for Government authorized use only.
+    * Unauthorized or improper use of this system is prohibited and may result in disciplinary action and/or civil and criminal penalties.
+    * Personal use of social media and networking sites on this system is limited as to not interfere with official work duties and is subject to monitoring.
+    * By using this system, you understand and consent to the following:  - The Government may monitor, record, and audit your system usage, including usage of personal devices and email systems for official duties or to conduct HHS business. Therefore, you have no reasonable expectation of privacy regarding any communication or data transiting or stored on this system. At any time, and for any lawful Government purpose, the government may monitor, intercept, and search and seize any communication or data transiting or stored on this system.  - Any communication or data transiting or stored on this system may be disclosed or used for any lawful Government purposes."
+
   - name: overlay_controls
     desc: 'List of inapplicable controls in ARS 5.0 based on the system categorization'
     type: Array
-<% if ENV['BASELINE'] == 'High-HVA' %>
+    <% if ENV['BASELINE'] == 'High-HVA' %>
     value: []
-<% elsif ENV['BASELINE'] == 'High' %>
+    <% elsif ENV['BASELINE'] == 'High' %>
     value: []
-<% elsif ENV['BASELINE'] == 'Moderate-HVA' %>
+    <% elsif ENV['BASELINE'] == 'Moderate-HVA' %>
     value: []
-<% elsif ENV['BASELINE'] == 'Moderate' || ENV['BASELINE'].nil? %> # Default
+    <% elsif ENV['BASELINE'] == 'Moderate' || ENV['BASELINE'].nil? %> # Default
     value:
       - "V-93517" # SC-03
       - "V-93519" # SC-03
@@ -36,7 +141,7 @@ inputs:
       - "V-93525" # SC-03
       - "V-93527" # SC-03
       - "V-93529" # SC-03
-<% elsif ENV['BASELINE'] == 'Low-HVA' %>
+    <% elsif ENV['BASELINE'] == 'Low-HVA' %>
     value:
       - "V-92961" # AC-11 & AC-11(01)
       - "V-92963" # AC-17(01)
@@ -92,7 +197,7 @@ inputs:
       - "V-93567" # SI-02(02)
       - "V-93563" # SI-16
       - "V-93565" # SI-16
-<% elsif ENV['BASELINE'] == 'Low' %>
+    <% elsif ENV['BASELINE'] == 'Low' %>
     value:
       - "V-92961" # AC-11 & AC-11(01)
       - "V-92963" # AC-17(01)
@@ -167,73 +272,36 @@ inputs:
       - "V-93567" # SI-02(02)
       - "V-93563" # SI-16
       - "V-93565" # SI-16
-# <% else %>
-#     required: true
-<% end %>
+    # <% else %>
+    #     required: true
+    <% end %>
 
-  - name: org_name
-    desc: "Name of the organization running this profile"
-    type: Hash
-    value:
-      acronym: "CMS"
-      full_form: "Centers for Medicare & Medicaid Services"
+  - name: maximum_password_age_machine #V-93285
+    desc: "Set the machine account maximum password age stated by your organiztion"
+    type: Numeric
+    value: 60
     profile: microsoft-windows-server-2019-stig-baseline
 
-  # - name: max_pass_lockout #V-93141
-  #   desc: "Account lockout threshold is recommended to be 3 or less invalid logon attempts [3]"
-  #   type: Numeric
-  #   value: 5
-  #   profile: microsoft-windows-server-2019-stig-baseline
-
-  # - name: pass_lock_time #V-93143
-  #   desc: "Sets the number of min before a session is locked out [15]"
-  #   type: Numeric
-  #   value: 120
-  #   profile: microsoft-windows-server-2019-stig-baseline
-
-  # - name: maximum_password_age_machine #V-93285
-  #   desc: "Set the machine account maximum password age stated by your organiztion"
-  #   type: Numeric
-  #   value: 60
-  #   profile: microsoft-windows-server-2019-stig-baseline
-
-  # - name: password_history_size #V-93479
-  #   desc: "Set the password history size stated by your organization"
-  #   type: Numeric
-  #   value: 6
-  #   profile: microsoft-windows-server-2019-stig-baseline
-
-  # - name: minimum_password_length #V-93463
-  #   desc: "Set the minimum password length stated by your organization"
-  #   type: Numeric
-  #   value: 15
-  #   profile: microsoft-windows-server-2019-stig-baseline
-
-  # - name: app_password_age #V-93209
-  #   desc: "Set the number of days that manually managed application account passwords must be changed"
-  #   type: Numeric
-  #   value: 60
-  #   profile: microsoft-windows-server-2019-stig-baseline
-
-  # - name: unused_account_age #V-93457
-  #   desc: "Set the maximum age in days for unused accounts stated by your organization"
-  #   type: Numeric
-  #   value: 90
-  #   profile: microsoft-windows-server-2019-stig-baseline
-
-  - name: LegalNoticeCaption #V-93149
-    desc: "Use the default values or add an organization-defined legal notice caption"
-    type: Array
-    value:
-      - "CMS Notice and Consent Banner"
-      - "US Department of Health and Human Services Warning Statement"
+  - name: password_history_size #V-93479
+    desc: "Set the password history size stated by your organization"
+    type: Numeric
+    value: 6
     profile: microsoft-windows-server-2019-stig-baseline
 
-  - name: LegalNoticeText #V-93147
-    type: string
-    value: "* This warning banner provides privacy and security notices consistent with applicable federal laws, directives, and other federal guidance for accessing this Government system, which includes (1) this computer network, (2) all computers connected to this network, and (3) all devices and storage media attached to this network or to a computer on this network.
-    * This system is provided for Government authorized use only.
-    * Unauthorized or improper use of this system is prohibited and may result in disciplinary action and/or civil and criminal penalties.
-    * Personal use of social media and networking sites on this system is limited as to not interfere with official work duties and is subject to monitoring.
-    * By using this system, you understand and consent to the following:  - The Government may monitor, record, and audit your system usage, including usage of personal devices and email systems for official duties or to conduct HHS business. Therefore, you have no reasonable expectation of privacy regarding any communication or data transiting or stored on this system. At any time, and for any lawful Government purpose, the government may monitor, intercept, and search and seize any communication or data transiting or stored on this system.  - Any communication or data transiting or stored on this system may be disclosed or used for any lawful Government purposes."
+  - name: minimum_password_length #V-93463
+    desc: "Set the minimum password length stated by your organization"
+    type: Numeric
+    value: 15
+    profile: microsoft-windows-server-2019-stig-baseline
+
+  - name: app_password_age #V-93209
+    desc: "Set the number of days that manually managed application account passwords must be changed"
+    type: Numeric
+    value: 60
+    profile: microsoft-windows-server-2019-stig-baseline
+
+  - name: unused_account_age #V-93457
+    desc: "Set the maximum age in days for unused accounts stated by your organization"
+    type: Numeric
+    value: 90
     profile: microsoft-windows-server-2019-stig-baseline
