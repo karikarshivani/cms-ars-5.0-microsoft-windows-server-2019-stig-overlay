@@ -14,7 +14,7 @@ Latest versions and installation options are available at the [InSpec](http://in
 
 ```
 # How to run
-BASELINE=<your_system_categorization> inspec exec https://github.com/CMSgov/cms-ars-5.0-microsoft-windows-server-2019-stig-overlay/archive/master.tar.gz --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> -t winrm://<hostname> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
+BASELINE=<your_system_categorization> inspec exec https://github.com/CMSgov/cms-ars-5.0-microsoft-windows-server-2019-stig-overlay/archive/main.tar.gz --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> -t winrm://<hostname> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
 ```
 
 ### Different Run Options
