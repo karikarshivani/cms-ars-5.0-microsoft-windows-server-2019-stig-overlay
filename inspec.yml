@@ -37,7 +37,7 @@ inputs:
     <% elsif ENV['BASELINE'] == 'Moderate' %>
     value: 60
     <% else %>
-    value: 3 # Baseline default?
+    value: 3
     <% end %>
 
   - name: temporary_account_period_phrase # V-92975
@@ -106,6 +106,78 @@ inputs:
     value: 15
     <% end %>
 
+  - name: app_password_age # V-93209
+    desc: "Set the number of days that manually managed application account passwords must be changed"
+    type: Numeric
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'Moderate-HVA', 'Low-HVA'].include? ENV['BASELINE'] %>
+    value: 60
+    <% else %>
+    value: 365
+    <% end %>
+
+  - name: maximum_password_age_machine # V-93285
+    desc: "Set the machine account maximum password age stated by your organiztion"
+    type: Numeric
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'Moderate-HVA', 'Low-HVA'].include? ENV['BASELINE'] %>
+    value: 60
+    <% else %>
+    value: 30
+    <% end %>
+
+  - name: minimum_password_length_manual # V-93461
+    desc: "Set the minimum password length for manually managed applications stated by your organization"
+    type: Numeric
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'Moderate-HVA', 'Low-HVA'].include? ENV['BASELINE'] %>
+    value: 20
+    <% else %>
+    value: 15
+    <% end %>
+
+  - name: minimum_password_length # V-93463
+    desc: "Set the minimum password length stated by your organization"
+    type: Numeric
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'Moderate-HVA', 'Low-HVA'].include? ENV['BASELINE'] %>
+    value: 20
+    <% else %>
+    value: 15
+    <% end %>
+
+  - name: maximum_idle_time # V-93509
+    desc: "Set the maximum connection idle time stated by your organization"
+    type: Numeric
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'High', 'Moderate-HVA', 'Moderate'].include? ENV['BASELINE'] %>
+    value: 1800
+    <% else %>
+    value: 300
+    <% end %>
+
+  - name: maximum_idle_time_phrase # V-93509
+    desc: "Set the maximum connection idle time stated by your organization"
+    type: String
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'High', 'Moderate-HVA', 'Moderate'].include? ENV['BASELINE'] %>
+    value: "30 minutes"
+    <% else %>
+    value: "5 minutes"
+    <% end %>
+
+  - name: unused_account_age # V-93457
+    desc: "Set the maximum age in days for unused accounts stated by your organization"
+    type: Numeric
+    profile: microsoft-windows-server-2019-stig-baseline
+    <% if ['High-HVA', 'High'].include? ENV['BASELINE'] %>
+    value: 30
+    <% elsif ['Moderate-HVA', 'Moderate'].include? ENV['BASELINE'] %>
+    value: 60
+    <% else %>
+    value: 35
+    <% end %>
+
   - name: LegalNoticeCaption # V-93149
     desc: "Use the default values or add an organization-defined legal notice caption"
     type: Array
@@ -124,16 +196,30 @@ inputs:
     * By using this system, you understand and consent to the following:  - The Government may monitor, record, and audit your system usage, including usage of personal devices and email systems for official duties or to conduct HHS business. Therefore, you have no reasonable expectation of privacy regarding any communication or data transiting or stored on this system. At any time, and for any lawful Government purpose, the government may monitor, intercept, and search and seize any communication or data transiting or stored on this system.  - Any communication or data transiting or stored on this system may be disclosed or used for any lawful Government purposes."
 
   - name: overlay_controls
-    desc: 'List of inapplicable controls in ARS 5.0 based on the system categorization'
+    desc: 'List of inapplicable controls/requirements in ARS 5.0 based on the system categorization'
     type: Array
     <% if ENV['BASELINE'] == 'High-HVA' %>
     value: []
     <% elsif ENV['BASELINE'] == 'High' %>
-    value: []
+    value:
+      - "V-93209" # CM-06 Requirement NA
+      - "V-93285" # CM-06 Requirement NA
+      - "V-93471" # IA-05(01) Requirement NA
+      - "V-93473" # IA-05(01) Requirement NA
+      - "V-93475" # IA-05(01) Requirement NA
+      - "V-93477" # IA-05(01) Requirement NA
+      - "V-93479" # IA-05(01) Requirement NA
     <% elsif ENV['BASELINE'] == 'Moderate-HVA' %>
     value: []
     <% elsif ENV['BASELINE'] == 'Moderate' || ENV['BASELINE'].nil? %> # Default
     value:
+      - "V-93209" # CM-06 Requirement NA
+      - "V-93285" # CM-06 Requirement NA
+      - "V-93471" # IA-05(01) Requirement NA
+      - "V-93473" # IA-05(01) Requirement NA
+      - "V-93475" # IA-05(01) Requirement NA
+      - "V-93477" # IA-05(01) Requirement NA
+      - "V-93479" # IA-05(01) Requirement NA
       - "V-93517" # SC-03
       - "V-93519" # SC-03
       - "V-93521" # SC-03
@@ -238,10 +324,17 @@ inputs:
       - "V-93087" # AC-06(10)
       - "V-93173" # AU-03(01)
       - "V-93175" # AU-03(01)
+      - "V-93209" # CM-06 Requirement NA
+      - "V-93285" # CM-06 Requirement NA
       - "V-93373" # CM-07(02)
       - "V-93375" # CM-07(02)
       - "V-93377" # CM-07(02)
       - "V-93379" # CM-07(05)
+      - "V-93471" # IA-05(01) Requirement NA
+      - "V-93473" # IA-05(01) Requirement NA
+      - "V-93475" # IA-05(01) Requirement NA
+      - "V-93477" # IA-05(01) Requirement NA
+      - "V-93479" # IA-05(01) Requirement NA
       - "V-93481" # IA-05(02)
       - "V-93483" # IA-05(02)
       - "V-93485" # IA-05(02)
@@ -275,33 +368,3 @@ inputs:
     # <% else %>
     #     required: true
     <% end %>
-
-  - name: maximum_password_age_machine #V-93285
-    desc: "Set the machine account maximum password age stated by your organiztion"
-    type: Numeric
-    value: 60
-    profile: microsoft-windows-server-2019-stig-baseline
-
-  - name: password_history_size #V-93479
-    desc: "Set the password history size stated by your organization"
-    type: Numeric
-    value: 6
-    profile: microsoft-windows-server-2019-stig-baseline
-
-  - name: minimum_password_length #V-93463
-    desc: "Set the minimum password length stated by your organization"
-    type: Numeric
-    value: 15
-    profile: microsoft-windows-server-2019-stig-baseline
-
-  - name: app_password_age #V-93209
-    desc: "Set the number of days that manually managed application account passwords must be changed"
-    type: Numeric
-    value: 60
-    profile: microsoft-windows-server-2019-stig-baseline
-
-  - name: unused_account_age #V-93457
-    desc: "Set the maximum age in days for unused accounts stated by your organization"
-    type: Numeric
-    value: 90
-    profile: microsoft-windows-server-2019-stig-baseline
