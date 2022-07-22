@@ -14,7 +14,7 @@ Latest versions and installation options are available at the [InSpec](http://in
 
 ```
 # How to run
-BASELINE=<your_system_categorization> inspec exec https://github.com/CMSgov/cms-ars-5.0-microsoft-windows-server-2019-stig-overlay/archive/main.tar.gz --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> -t winrm://<hostname> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
+BASELINE=<your_system_categorization> inspec exec https://github.com/CMSgov/cms-ars-5.0-microsoft-windows-server-2019-stig-overlay/archive/master.tar.gz --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> -t winrm://<hostname> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
 ```
 
 ### Different Run Options
@@ -51,7 +51,7 @@ BASELINE=<your_system_categorization> inspec exec <name of generated archive> --
 
 The JSON results output file can be loaded into __[heimdall-lite](https://heimdall-lite.mitre.org/)__ for a user-interactive, graphical view of the InSpec results. 
 
-The JSON InSpec results file may also be loaded into a __[full heimdall server](https://github.com/mitre/heimdall)__, allowing for additional functionality such as to store and compare multiple profile runs.
+The JSON InSpec results file may also be loaded into a __[full heimdall server](https://github.com/mitre/heimdall2)__, allowing for additional functionality such as to store and compare multiple profile runs.
 
 ## Authors
 * Shivani Karikar - [karikarshivani](https://github.com/karikarshivani)
